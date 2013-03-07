@@ -148,7 +148,7 @@ function! s:TagSelectMain(cmd, ...) " {{{
     let tagName = substitute(tagName, '<cword>\|<cWORD>',
           \ '\=expand(submatch(0))', 'g')
   endif
-  let results = GetVimCmdOutput(a:cmd.' '.tagName)
+  let results = genutils#GetVimCmdOutput(a:cmd.' '.tagName)
   if v:errmsg != '' && results =~ '^\_s*$'
     redraw | echohl ErrorMsg | echomsg v:errmsg | echohl NONE
     return 1
@@ -163,15 +163,15 @@ function! s:TagSelectMain(cmd, ...) " {{{
   let _splitbelow = &splitbelow
   set splitbelow
   try
-    call SaveWindowSettings2('TagSelect', 1)
+    call genutils#SaveWindowSettings2('TagSelect', 1)
     if s:myBufNum == -1
       " Temporarily modify isfname to avoid treating the name as a pattern.
       set isfname-=\
       set isfname-=[
       if exists('+shellslash')
-        call OpenWinNoEa("sp \\\\". escape(s:title, ' '))
+        call genutils#OpenWinNoEa("sp \\\\". escape(s:title, ' '))
       else
-        call OpenWinNoEa("sp \\". escape(s:title, ' '))
+        call genutils#OpenWinNoEa("sp \\". escape(s:title, ' '))
       endif
       exec "normal i\<C-G>u\<Esc>"
       let s:myBufNum = bufnr('%')
@@ -206,7 +206,7 @@ function! s:TagSelectMain(cmd, ...) " {{{
   normal! zz
 
   " Resize only if this is not the only window vertically.
-  if !IsOnlyVerticalWindow()
+  if !genutils#IsOnlyVerticalWindow()
     let targetSize = g:tagselectWinSize
     if targetSize == -1
       let targetSize = line('$')
@@ -310,8 +310,8 @@ function! s:SelectTag(cmd, tagCount, bang)
     try
       if a:cmd != 'tag' && a:cmd != 'pop'
         if a:cmd == 'stselect'
-          call CloseWindow(tagSelWin, 1)
-          call RestoreWindowSettings2('TagSelect')
+          call genutils#CloseWindow(tagSelWin, 1)
+          call genutils#RestoreWindowSettings2('TagSelect')
           let tagWindowOpen = 0
         endif
 
@@ -336,8 +336,8 @@ function! s:SelectTag(cmd, tagCount, bang)
             \ echomsg substitute(v:exception, '^[^:]\+:', '', '') | echohl NONE
     finally
       if tagWindowOpen
-        call CloseWindow(tagSelWin, 1)
-        call RestoreWindowSettings2('TagSelect')
+        call genutils#CloseWindow(tagSelWin, 1)
+        call genutils#RestoreWindowSettings2('TagSelect')
       endif
       let &lazyredraw = _lazyredraw
       let &more = _more
@@ -347,7 +347,7 @@ function! s:SelectTag(cmd, tagCount, bang)
 endfunction " }}}
 
 function! s:SetupBuf() " {{{
-  call SetupScratchBuffer()
+  call genutils#SetupScratchBuffer()
   setlocal nowrap
   setlocal bufhidden=delete
 
@@ -436,12 +436,12 @@ endfunction
 " }}}
 
 function! s:Quit()
-  if NumberOfWindows() == 1
+  if genutils#NumberOfWindows() == 1
     redraw | echohl WarningMsg | echo "Can't quit the last window" |
           \ echohl NONE
   else
     quit
-    call RestoreWindowSettings2('TagSelect')
+    call genutils#RestoreWindowSettings2('TagSelect')
   endif
 endfunction
 
