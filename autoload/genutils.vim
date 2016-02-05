@@ -248,7 +248,7 @@ function! genutils#RestoreActiveWindow()
     exec t:curWinnr'wincmd w'
   endif
   if t:curWinnr != t:prevWinnr
-    exec t:prevWinnr'wincmd w'
+    silent! exec t:prevWinnr'wincmd w'
     wincmd p
   endif
 endfunction
