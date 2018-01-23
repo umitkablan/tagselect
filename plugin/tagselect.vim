@@ -217,6 +217,17 @@ function! s:TagSelectMain(cmd, ...) " {{{
   return 0
 endfunction " }}}
 
+function! s:TSMoveToEntry(direction)
+  let flag = "W"
+  if a:direction ==# "prev"
+    let flag = flag . "b"
+  endif
+  let l = search('^\s*\d\+\s\+\S\s\+', flag)
+  if l == 0
+    echomsg "Last item!"
+  endif
+endfunction
+
 " Function to use the current visual selection as the tag. Should be called
 " only from the visual mode.
 function! s:TagSelectVisual(tagCmd) " {{{
@@ -356,6 +367,8 @@ function! s:SetupBuf() " {{{
   nnoremap <silent> <buffer> q :TSQuit<CR>
   nnoremap <silent> <buffer> <CR> :TSSelect<CR>
   nnoremap <silent> <buffer> <2-LeftMouse> :TSSelect<CR>
+  nnoremap <silent> <buffer> j :call s:TSMoveToEntry("next")<CR>
+  nnoremap <silent> <buffer> k :call s:TSMoveToEntry("prev")<CR>
 
   " When user types numbers in the browser window, input the tag index
   " directly.
