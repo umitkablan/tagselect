@@ -222,7 +222,7 @@ function! s:TSMoveToEntry(direction)
   if a:direction ==# "prev"
     let flag = flag . "b"
   endif
-  let l = search('^\s*\d\+\s\+\S\s\+', flag)
+   let l = search('^\s*\d\+\s\+\S\+\s\+\S', flag)
   if l == 0
     echomsg "Last item!"
   endif
